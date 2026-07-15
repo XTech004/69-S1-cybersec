@@ -4,7 +4,7 @@ services:
     container_name: 69-s1-db
     posts:
       - 54327:5432
-      environments:
+      environment:
       - POSTGRES_PASSWORD=@xZ0041105
       - POSTGRES_USER=sorasak
       - POSTGRES_DB=sorasak

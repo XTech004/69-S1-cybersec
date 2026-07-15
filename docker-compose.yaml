@@ -1,0 +1,12 @@
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: 69-s1-db
+    posts:
+      - 54327:5432
+      environments:
+      - POSTGRES_PASSWORD=@xZ0041105
+      - POSTGRES_USER=sorasak
+      - POSTGRES_DB=sorasak
+      volumes:
+      - ./data/data:/var/lib/postgresql/data

@@ -5,11 +5,11 @@ services:
     ports:
       - "54327:5432"
     environment:
-      - POSTGRES_PASSWORD=@xZ0041105
-      - POSTGRES_USER=sorasak
-      - POSTGRES_DB=sorasak
+      POSTGRES_PASSWORD: "@xZ0041105"
+      POSTGRES_USER: sorasak
+      POSTGRES_DB: sorasak
     volumes:
-      - ./data/data:/var/lib/postgresql/data
+      - ./data/db:/var/lib/postgresql/data
 
   pgadmin:
     image: dpage/pgadmin4
@@ -17,9 +17,12 @@ services:
     ports:
       - "8081:80"
     environment:
-      - PGADMIN_DEFAULT_EMAIL=admin@gmail.com
-      - PGADMIN_DEFAULT_PASSWORD=admin123
+      PGADMIN_DEFAULT_EMAIL: admin@gmail.com
+      PGADMIN_DEFAULT_PASSWORD: admin123
     volumes:
-      - ./data/pgadmin:/var/lib/pgadmin
+      - pgadmin_data:/var/lib/pgadmin
     depends_on:
       - db
+
+volumes:
+  pgadmin_data:

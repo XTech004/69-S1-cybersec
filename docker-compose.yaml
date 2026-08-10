@@ -30,7 +30,7 @@ services:
       - "9091:1337"
     environment:
       DATABASE_CLIENT: postgres
-      DATABASE_HOST: db
+      DATABASE_HOST: 69-s1-db
       DATABASE_PORTS: 5432
       DATABASE_USER: sorasak
       DATABASE_PASSWORD: "@xZ0041105"

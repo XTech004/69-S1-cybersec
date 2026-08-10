@@ -31,8 +31,9 @@ services:
     environment:
       DATABASE_CLIENT: postgres
       DATABASE_HOST: 69-s1-db
-      DATABASE_PORTS: 5432
-      DATABASE_USER: sorasak
+      DATABASE_PORT: 5432
+      DATABASE_NAME: sorasak
+      DATABASE_USERNAME: sorasak
       DATABASE_PASSWORD: "@xZ0041105"
 
 

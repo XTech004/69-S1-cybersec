@@ -1,21 +1,31 @@
 @baseUrl = http://localhost:9091
 
+# Environment Variables from .env
+@adminEmail = {{$dotenv ADMIN_EMAIL}}
+@adminPassword = {{$dotenv ADMIN_PASSWORD}}
+@adminNewPassword = {{$dotenv ADMIN_NEW_PASSWORD}}
+
+@userEmail = {{$dotenv USER_EMAIL}}
+@userPassword = {{$dotenv USER_PASSWORD}}
+@userNewPassword = {{$dotenv USER_NEW_PASSWORD}}
+
 ### ==========================================
-### 👑 ฝั่ง ADMIN (ผู้ดูแลระบบ)
+### 👑 1. ฝั่ง ADMIN (ผู้ดูแลระบบ)
 ### ==========================================
 
-# 1. Admin: Login
+# 1.1 Admin: Login
+# @name adminLogin
 POST {{baseUrl}}/admin/login
 Content-Type: application/json
 
 {
-  "email": "admin@example.com",
-  "password": "AdminPassword123!",
+  "email": "{{adminEmail}}",
+  "password": "{{adminPassword}}",
   "rememberMe": false
 }
 
 ###
-# 2. Admin: Register
+# 1.2 Admin: Register
 POST {{baseUrl}}/admin/register
 Content-Type: application/json
 
@@ -23,80 +33,84 @@ Content-Type: application/json
   "firstname": "Admin",
   "lastname": "X",
   "email": "adminX@example.com",
-  "password": "xz123456!"
+  "password": "{{adminPassword}}"
 }
 
 ###
-# 3. Admin: Forgot Password
+# 1.3 Admin: Forgot Password
+# @name adminForgot
 POST {{baseUrl}}/admin/forgot-password
 Content-Type: application/json
 
 {
-  "email": "admin@example.com"
+  "email": "{{adminEmail}}"
 }
 
 ###
-# 4. Admin: Reset Password
+# 1.3.1 Admin: Reset Password
 POST {{baseUrl}}/admin/reset-password
 Content-Type: application/json
 
 {
-  "resetPasswordToken": "RESET_TOKEN_FROM_EMAIL",
-  "password": "NewAdminPassword123!"
+  "resetPasswordToken": "{{adminForgot.response.body.resetPasswordToken}}",
+  "password": "{{adminNewPassword}}"
 }
 
 ###
-# 5. Admin: Profile 
-# (ต้องนำ Token ใหม่ที่ได้จาก Admin Login มาใส่แทนค่าด้านล่างเวลาทดสอบจริง)
+# 1.4 Admin: Profile 
+# (ดึง Token ใหม่จาก Admin Login ให้อัตโนมัติ)
 GET {{baseUrl}}/admin/users/me
-Authorization: Bearer YOUR_ADMIN_TOKEN_HERE
+Authorization: Bearer {{adminLogin.response.body.data.token}}
 
 
 ### ==========================================
-### 👤 ฝั่ง USER (ผู้ใช้งานทั่วไป)
+### 👤 2. ฝั่ง USER (ผู้ใช้งานทั่วไป)
 ### ==========================================
 
-# 1. User: Login
+# 2.1 User: Login
+# @name userLogin
 POST {{baseUrl}}/api/auth/local
 Content-Type: application/json
 
 {
-  "identifier": "user@example.com",
-  "password": "UserPassword123!"
+  "identifier": "{{userEmail}}",
+  "password": "{{userPassword}}"
 }
 
 ###
-# 2. User: Register / Signup
+# 2.2 User: Register
 POST {{baseUrl}}/api/auth/local/register
 Content-Type: application/json
 
 {
-  "username": "SampleUser",
-  "email": "user@example.com",
-  "password": "UserPassword123!"
+  "username": "Mr.xcoser2",
+  "email": "{{userEmail}}",
+  "password": "{{userPassword}}"
 }
 
 ###
-# 3. User: Forgot Password
+# 2.3 User: Forgot Password
+# @name userForgot
 POST {{baseUrl}}/api/auth/forgot-password
 Content-Type: application/json
 
 {
-  "email": "user@example.com"
+  "email": "{{userEmail}}"
 }
 
 ###
-# 4. User: Reset Password
+# 2.3.1 User: Reset Password
 POST {{baseUrl}}/api/auth/reset-password
 Content-Type: application/json
 
 {
-  "code": "RESET_CODE_FROM_EMAIL",
-  "password": "NewUserPassword123!",
-  "passwordConfirmation": "NewUserPassword123!"
+  "code": "{{userForgot.response.body.code}}",
+  "password": "{{userNewPassword}}",
+  "passwordConfirmation": "{{userNewPassword}}"
 }
 
 ###
-# 5. User: Profile
+# 2.4 User: Profile
+# (ดึง Token จาก User Login ให้อัตโนมัติ)
 GET {{baseUrl}}/api/users/me
-Authorization: Bearer YOUR_USER_TOKEN_HERE
+Authorization: Bearer {{userLogin.response.body.jwt}}

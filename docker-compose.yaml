@@ -35,5 +35,9 @@ services:
       DATABASE_NAME: ${DATABASE_NAME}
       DATABASE_USERNAME: ${DATABASE_USERNAME}
       DATABASE_PASSWORD: ${DATABASE_PASSWORD}
+    volumes:
+      - ./patches/admin-auth.js:/opt/node_modules/@strapi/admin/server/services/auth.js
+      - ./patches/admin-authentication-controller.js:/opt/node_modules/@strapi/admin/server/controllers/authentication.js
+      - ./patches/users-permissions-auth.js:/opt/node_modules/@strapi/plugin-users-permissions/server/controllers/auth.js
 
 

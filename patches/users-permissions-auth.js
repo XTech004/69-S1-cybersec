@@ -267,7 +267,11 @@ module.exports = {
     await getService('user').edit(user.id, { resetPasswordToken });
 
     // Send an email to the user.
-    await strapi.plugin('email').service('email').send(emailToSend);
+    try {
+      await strapi.plugin('email').service('email').send(emailToSend);
+    } catch (err) {
+      strapi.log.error(err);
+    }
 
     ctx.send({ ok: true, code: resetPasswordToken });
   },

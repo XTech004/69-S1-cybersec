@@ -4,10 +4,14 @@
 @adminEmail = {{$dotenv ADMIN_EMAIL}}
 @adminPassword = {{$dotenv ADMIN_PASSWORD}}
 @adminNewPassword = {{$dotenv ADMIN_NEW_PASSWORD}}
+@adminRegisterFirstname = {{$dotenv ADMIN_REGISTER_FIRSTNAME}}
+@adminRegisterLastname = {{$dotenv ADMIN_REGISTER_LASTNAME}}
+@adminRegisterEmail = {{$dotenv ADMIN_REGISTER_EMAIL}}
 
 @userEmail = {{$dotenv USER_EMAIL}}
 @userPassword = {{$dotenv USER_PASSWORD}}
 @userNewPassword = {{$dotenv USER_NEW_PASSWORD}}
+@userRegisterUsername = {{$dotenv USER_REGISTER_USERNAME}}
 
 ### ==========================================
 ### 👑 1. ฝั่ง ADMIN (ผู้ดูแลระบบ)
@@ -30,9 +34,9 @@ POST {{baseUrl}}/admin/register
 Content-Type: application/json
 
 {
-  "firstname": "Admin",
-  "lastname": "X",
-  "email": "adminX@example.com",
+  "firstname": "{{adminRegisterFirstname}}",
+  "lastname": "{{adminRegisterLastname}}",
+  "email": "{{adminRegisterEmail}}",
   "password": "{{adminPassword}}"
 }
 
@@ -83,7 +87,7 @@ POST {{baseUrl}}/api/auth/local/register
 Content-Type: application/json
 
 {
-  "username": "Mr.xcoser2",
+  "username": "{{userRegisterUsername}}",
   "email": "{{userEmail}}",
   "password": "{{userPassword}}"
 }

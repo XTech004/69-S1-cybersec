@@ -26,8 +26,11 @@ services:
   app:
     image: prawee/strapi
     container_name: 69-s1-app
+    restart: unless-stopped
     ports:
       - "${APP_PORT}:1337"
+    depends_on:
+      - db
     environment:
       DATABASE_CLIENT: ${DATABASE_CLIENT}
       DATABASE_HOST: ${DATABASE_HOST}

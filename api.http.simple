@@ -12,6 +12,7 @@
 @userPassword = {{$dotenv USER_PASSWORD}}
 @userNewPassword = {{$dotenv USER_NEW_PASSWORD}}
 @userRegisterUsername = {{$dotenv USER_REGISTER_USERNAME}}
+@userRegisterEmail = {{$dotenv USER_REGISTER_EMAIL}}
 
 ### ==========================================
 ### 👑 1. ฝั่ง ADMIN (ผู้ดูแลระบบ)
@@ -29,8 +30,9 @@ Content-Type: application/json
 }
 
 ###
-# 1.2 Admin: Register
-POST {{baseUrl}}/admin/register
+# 1.2 Admin: Signup
+// ใช้ได้เฉพาะตอนที่ยังไม่มี Super Admin (ครั้งแรกหลัง setup เท่านั้น)
+POST {{baseUrl}}/admin/register-admin
 Content-Type: application/json
 
 {
@@ -52,6 +54,7 @@ Content-Type: application/json
 
 ###
 # 1.3.1 Admin: Reset Password
+// เอา token (query param ชื่อ code) จากลิงก์ในอีเมลที่ 1.3 ส่งกลับไปใส่ใน field resetPasswordToken
 POST {{baseUrl}}/admin/reset-password
 Content-Type: application/json
 
@@ -62,7 +65,7 @@ Content-Type: application/json
 
 ###
 # 1.4 Admin: Profile 
-# (ดึง Token ใหม่จาก Admin Login ให้อัตโนมัติ)
+// เอา token จาก response ของข้อ 1.1 ไปใส่ใน Authorization
 GET {{baseUrl}}/admin/users/me
 Authorization: Bearer {{adminLogin.response.body.data.token}}
 
@@ -82,18 +85,19 @@ Content-Type: application/json
 }
 
 ###
-# 2.2 User: Register
+# 2.2 User: Signup
 POST {{baseUrl}}/api/auth/local/register
 Content-Type: application/json
 
 {
   "username": "{{userRegisterUsername}}",
-  "email": "{{userEmail}}",
+  "email": "{{userRegisterEmail}}",
   "password": "{{userPassword}}"
 }
 
 ###
 # 2.3 User: Forgot Password
+// Strapi จะคืน 500 ถ้ายังไม่ได้ตั้งค่า SMTP สำหรับส่งอีเมล
 # @name userForgot
 POST {{baseUrl}}/api/auth/forgot-password
 Content-Type: application/json
@@ -104,6 +108,7 @@ Content-Type: application/json
 
 ###
 # 2.3.1 User: Reset Password
+// เอา code จากลิงก์ในอีเมลที่ 2.3 ส่งกลับไปใส่ใน field code
 POST {{baseUrl}}/api/auth/reset-password
 Content-Type: application/json
 
@@ -115,6 +120,6 @@ Content-Type: application/json
 
 ###
 # 2.4 User: Profile
-# (ดึง Token จาก User Login ให้อัตโนมัติ)
+// เอา token จาก response ของข้อ 2.1 ไปใส่ใน Authorization
 GET {{baseUrl}}/api/users/me
 Authorization: Bearer {{userLogin.response.body.jwt}}

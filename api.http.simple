@@ -123,3 +123,149 @@ Content-Type: application/json
 // เอา token จาก response ของข้อ 2.1 ไปใส่ใน Authorization
 GET {{baseUrl}}/api/users/me
 Authorization: Bearer {{userLogin.response.body.jwt}}
+
+
+### ==========================================
+### 🎓 3. ฝั่ง ข้อมูล (Data Management)
+### ==========================================
+
+## 3.1 Student
+
+# 3.1.1 Create
+// เอา token จาก response ของข้อ 2.1 ไปใส่ใน Authorization
+POST {{baseUrl}}/api/students
+Authorization: Bearer {{userLogin.response.body.jwt}}
+Content-Type: application/json
+
+{
+  "data": {
+    "name": "Somchai Jaidee",
+    "mobile": "0812345678",
+    "cardId": "1234567890123"
+  }
+}
+
+###
+# 3.1.2 List All
+// เอา token จาก response ของข้อ 2.1 ไปใส่ใน Authorization
+GET {{baseUrl}}/api/students
+Authorization: Bearer {{userLogin.response.body.jwt}}
+
+###
+# 3.1.3 List with ID
+// เอา token จาก response ของข้อ 2.1 ไปใส่ใน Authorization
+GET {{baseUrl}}/api/students/1
+Authorization: Bearer {{userLogin.response.body.jwt}}
+
+###
+# 3.1.4 Update
+// เอา token จาก response ของข้อ 2.1 ไปใส่ใน Authorization
+PUT {{baseUrl}}/api/students/1
+Authorization: Bearer {{userLogin.response.body.jwt}}
+Content-Type: application/json
+
+{
+  "data": {
+    "name": "Somchai Jaidee (Updated)"
+  }
+}
+
+###
+# 3.1.5 Delete
+// เอา token จาก response ของข้อ 2.1 ไปใส่ใน Authorization
+DELETE {{baseUrl}}/api/students/1
+Authorization: Bearer {{userLogin.response.body.jwt}}
+
+
+### ==========================================
+## 3.2 Subject
+
+# 3.2.1 Create
+// เอา token จาก response ของข้อ 2.1 ไปใส่ใน Authorization
+POST {{baseUrl}}/api/subjects
+Authorization: Bearer {{userLogin.response.body.jwt}}
+Content-Type: application/json
+
+{
+  "data": {
+    "name": "Cyber Security"
+  }
+}
+
+###
+# 3.2.2 List All
+// เอา token จาก response ของข้อ 2.1 ไปใส่ใน Authorization
+GET {{baseUrl}}/api/subjects
+Authorization: Bearer {{userLogin.response.body.jwt}}
+
+###
+# 3.2.3 List with ID
+// เอา token จาก response ของข้อ 2.1 ไปใส่ใน Authorization
+GET {{baseUrl}}/api/subjects/1
+Authorization: Bearer {{userLogin.response.body.jwt}}
+
+###
+# 3.2.4 Update
+// เอา token จาก response ของข้อ 2.1 ไปใส่ใน Authorization
+PUT {{baseUrl}}/api/subjects/1
+Authorization: Bearer {{userLogin.response.body.jwt}}
+Content-Type: application/json
+
+{
+  "data": {
+    "name": "Cyber Security (Updated)"
+  }
+}
+
+###
+# 3.2.5 Delete
+// เอา token จาก response ของข้อ 2.1 ไปใส่ใน Authorization
+DELETE {{baseUrl}}/api/subjects/1
+Authorization: Bearer {{userLogin.response.body.jwt}}
+
+
+### ==========================================
+## 3.3 Teacher
+
+# 3.3.1 Create
+// เอา token จาก response ของข้อ 2.1 ไปใส่ใน Authorization
+POST {{baseUrl}}/api/teachers
+Authorization: Bearer {{userLogin.response.body.jwt}}
+Content-Type: application/json
+
+{
+  "data": {
+    "name": "Ajarn Prawee"
+  }
+}
+
+###
+# 3.3.2 List All
+// เอา token จาก response ของข้อ 2.1 ไปใส่ใน Authorization
+GET {{baseUrl}}/api/teachers
+Authorization: Bearer {{userLogin.response.body.jwt}}
+
+###
+# 3.3.3 List with ID
+// เอา token จาก response ของข้อ 2.1 ไปใส่ใน Authorization
+GET {{baseUrl}}/api/teachers/1
+Authorization: Bearer {{userLogin.response.body.jwt}}
+
+###
+# 3.3.4 Update
+// เอา token จาก response ของข้อ 2.1 ไปใส่ใน Authorization
+PUT {{baseUrl}}/api/teachers/1
+Authorization: Bearer {{userLogin.response.body.jwt}}
+Content-Type: application/json
+
+{
+  "data": {
+    "name": "Ajarn Prawee (Updated)"
+  }
+}
+
+###
+# 3.3.5 Delete
+// เอา token จาก response ของข้อ 2.1 ไปใส่ใน Authorization
+DELETE {{baseUrl}}/api/teachers/1
+Authorization: Bearer {{userLogin.response.body.jwt}}

@@ -1,274 +1,192 @@
-@baseUrl = http://localhost:9091
+# API
 
-# Environment Variables from .env
-@adminEmail = {{$dotenv ADMIN_EMAIL}}
-@adminPassword = {{$dotenv ADMIN_PASSWORD}}
-@adminNewPassword = {{$dotenv ADMIN_NEW_PASSWORD}}
-@adminRegisterFirstname = {{$dotenv ADMIN_REGISTER_FIRSTNAME}}
-@adminRegisterLastname = {{$dotenv ADMIN_REGISTER_LASTNAME}}
-@adminRegisterEmail = {{$dotenv ADMIN_REGISTER_EMAIL}}
+## 1.Admin
 
-@userEmail = {{$dotenv USER_EMAIL}}
-@userPassword = {{$dotenv USER_PASSWORD}}
-@userNewPassword = {{$dotenv USER_NEW_PASSWORD}}
-@userRegisterUsername = {{$dotenv USER_REGISTER_USERNAME}}
-@userRegisterEmail = {{$dotenv USER_REGISTER_EMAIL}}
-
-### ==========================================
-### 👑 1. ฝั่ง ADMIN (ผู้ดูแลระบบ)
-### ==========================================
-
-# 1.1 Admin: Login
-# @name adminLogin
-POST {{baseUrl}}/admin/login
+### 1.1 Login
+POST http://localhost:9091/admin/login
 Content-Type: application/json
 
 {
-  "email": "{{adminEmail}}",
-  "password": "{{adminPassword}}",
-  "rememberMe": false
+    "email": "{{$dotenv ADMIN_EMAIL}}",
+    "password": "{{$dotenv ADMIN_PASSWORD}}",
+    "rememberMe": false
 }
 
-###
-# 1.2 Admin: Signup
+### 1.2 Signup
 // ใช้ได้เฉพาะตอนที่ยังไม่มี Super Admin (ครั้งแรกหลัง setup เท่านั้น)
-POST {{baseUrl}}/admin/register-admin
+POST http://localhost:9091/admin/register-admin
 Content-Type: application/json
 
 {
-  "firstname": "{{adminRegisterFirstname}}",
-  "lastname": "{{adminRegisterLastname}}",
-  "email": "{{adminRegisterEmail}}",
-  "password": "{{adminPassword}}"
+    "firstname": "{{$dotenv ADMIN_FIRSTNAME}}",
+    "lastname": "{{$dotenv ADMIN_LASTNAME}}",
+    "email": "{{$dotenv ADMIN_EMAIL}}",
+    "password": "{{$dotenv ADMIN_PASSWORD}}"
 }
 
-###
-# 1.3 Admin: Forgot Password
-# @name adminForgot
-POST {{baseUrl}}/admin/forgot-password
+### 1.3 Forgot Password
+POST http://localhost:9091/admin/forgot-password
 Content-Type: application/json
 
 {
-  "email": "{{adminEmail}}"
+    "email": "{{$dotenv ADMIN_EMAIL}}"
 }
 
-###
-# 1.3.1 Admin: Reset Password
+### 1.3.1 Reset Password
 // เอา token (query param ชื่อ code) จากลิงก์ในอีเมลที่ 1.3 ส่งกลับไปใส่ใน field resetPasswordToken
-POST {{baseUrl}}/admin/reset-password
+POST http://localhost:9091/admin/reset-password
 Content-Type: application/json
 
 {
-  "resetPasswordToken": "{{adminForgot.response.body.resetPasswordToken}}",
-  "password": "{{adminNewPassword}}"
+    "resetPasswordToken": "{{$dotenv RESET_CODE}}",
+    "password": "{{$dotenv ADMIN_PASSWORD}}"
 }
 
-###
-# 1.4 Admin: Profile 
+### 1.4 Profile
 // เอา token จาก response ของข้อ 1.1 ไปใส่ใน Authorization
-GET {{baseUrl}}/admin/users/me
-Authorization: Bearer {{adminLogin.response.body.data.token}}
+GET http://localhost:9091/admin/users/me
+Authorization: Bearer {{$dotenv ADMIN_TOKEN}}
 
+## 2.User
 
-### ==========================================
-### 👤 2. ฝั่ง USER (ผู้ใช้งานทั่วไป)
-### ==========================================
-
-# 2.1 User: Login
-# @name userLogin
-POST {{baseUrl}}/api/auth/local
+### 2.1 Login
+POST http://localhost:9091/api/auth/local
 Content-Type: application/json
 
 {
-  "identifier": "{{userEmail}}",
-  "password": "{{userPassword}}"
+    "identifier": "{{$dotenv USER_EMAIL}}",
+    "password": "{{$dotenv USER_PASSWORD}}"
 }
 
-###
-# 2.2 User: Signup
-POST {{baseUrl}}/api/auth/local/register
+### 2.2 Signup
+POST http://localhost:9091/api/auth/local/register
 Content-Type: application/json
 
 {
-  "username": "{{userRegisterUsername}}",
-  "email": "{{userRegisterEmail}}",
-  "password": "{{userPassword}}"
+    "username": "{{$dotenv USER_USERNAME}}",
+    "email": "{{$dotenv USER_EMAIL}}",
+    "password": "{{$dotenv USER_PASSWORD}}"
 }
 
-###
-# 2.3 User: Forgot Password
+### 2.3 Forgot Password
 // Strapi จะคืน 500 ถ้ายังไม่ได้ตั้งค่า SMTP สำหรับส่งอีเมล
-# @name userForgot
-POST {{baseUrl}}/api/auth/forgot-password
+POST http://localhost:9091/api/auth/forgot-password
 Content-Type: application/json
 
 {
-  "email": "{{userEmail}}"
+    "email": "{{$dotenv USER_EMAIL}}"
 }
 
-###
-# 2.3.1 User: Reset Password
+### 2.3.1 Reset Password
 // เอา code จากลิงก์ในอีเมลที่ 2.3 ส่งกลับไปใส่ใน field code
-POST {{baseUrl}}/api/auth/reset-password
+POST http://localhost:9091/api/auth/reset-password
 Content-Type: application/json
 
 {
-  "code": "{{userForgot.response.body.code}}",
-  "password": "{{userNewPassword}}",
-  "passwordConfirmation": "{{userNewPassword}}"
+    "code": "{{$dotenv RESET_CODE}}",
+    "password": "{{$dotenv USER_PASSWORD}}",
+    "passwordConfirmation": "{{$dotenv USER_PASSWORD}}"
 }
 
-###
-# 2.4 User: Profile
+### 2.4 Profile
 // เอา token จาก response ของข้อ 2.1 ไปใส่ใน Authorization
-GET {{baseUrl}}/api/users/me
-Authorization: Bearer {{userLogin.response.body.jwt}}
+GET http://localhost:9091/api/users/me
+Authorization: Bearer {{$dotenv USER_TOKEN}}
 
-
-### ==========================================
-### 🎓 3. ฝั่ง ข้อมูล (Data Management)
-### ==========================================
-
-## 3.1 Student
-
-# 3.1.1 Create
-# @name createStudent
-// เอา token จาก response ของข้อ 2.1 ไปใส่ใน Authorization
-POST {{baseUrl}}/api/students
-Authorization: Bearer {{userLogin.response.body.jwt}}
+## 3.Content
+### 3.1 Student
+#### 3.1.1 Create Student
+POST http://localhost:9091/api/students
 Content-Type: application/json
+Authorization: Bearer {{$dotenv USER_TOKEN}}
 
 {
-  "data": {
-    "name": "Somchai Jaidee",
-    "mobile": "0812345678",
-    "cardId": "1234567890123"
-  }
+    "name": "{{$dotenv STUDENT_NAME}}",
+    "mobile": "{{$dotenv STUDENT_MOBILE}}",
+    "cardId": "{{$dotenv STUDENT_CARD_ID}}"
 }
 
-###
-# 3.1.2 List All
-// เอา token จาก response ของข้อ 2.1 ไปใส่ใน Authorization
-GET {{baseUrl}}/api/students
-Authorization: Bearer {{userLogin.response.body.jwt}}
+#### 3.1.2 Get all Student
+GET http://localhost:9091/api/students
+Authorization: Bearer {{$dotenv USER_TOKEN}}
 
-###
-# 3.1.3 List with ID
-// ดึง ID จากข้อ 3.1.1 ให้อัตโนมัติ (หรือเปลี่ยนเป็นเลข ID ที่ต้องการค้นหา)
-GET {{baseUrl}}/api/students/{{createStudent.response.body.data.id}}
-Authorization: Bearer {{userLogin.response.body.jwt}}
-
-###
-# 3.1.4 Update
-// ดึง ID จากข้อ 3.1.1 ให้อัตโนมัติ (หรือเปลี่ยนเป็นเลข ID ที่ต้องการอัปเดต)
-PUT {{baseUrl}}/api/students/{{createStudent.response.body.data.id}}
-Authorization: Bearer {{userLogin.response.body.jwt}}
+#### 3.1.3 Update Student
+PUT http://localhost:9091/api/students/1
 Content-Type: application/json
+Authorization: Bearer {{$dotenv USER_TOKEN}}
 
 {
-  "data": {
-    "name": "Somchai Jaidee (Updated)"
-  }
+    "name": "{{$dotenv STUDENT_UPDATE_NAME}}",
+    "mobile": "{{$dotenv STUDENT_UPDATE_MOBILE}}",
+    "cardId": "{{$dotenv STUDENT_CARD_ID}}"
 }
 
-###
-# 3.1.5 Delete
-// ดึง ID จากข้อ 3.1.1 ให้อัตโนมัติ (หรือเปลี่ยนเป็นเลข ID ที่ต้องการลบ)
-DELETE {{baseUrl}}/api/students/{{createStudent.response.body.data.id}}
-Authorization: Bearer {{userLogin.response.body.jwt}}
+#### 3.1.4 Delete Student
+DELETE http://localhost:9091/api/students/1
+Authorization: Bearer {{$dotenv USER_TOKEN}}
 
+#### 3.1.5 Get Student by ID
+GET http://localhost:9091/api/students/1
+Authorization: Bearer {{$dotenv USER_TOKEN}}
 
-### ==========================================
-## 3.2 Subject
-
-# 3.2.1 Create
-# @name createSubject
-// เอา token จาก response ของข้อ 2.1 ไปใส่ใน Authorization
-POST {{baseUrl}}/api/subjects
-Authorization: Bearer {{userLogin.response.body.jwt}}
+### 3.2 Teacher
+#### 3.2.1 Create Teacher
+POST http://localhost:9091/api/teachers
 Content-Type: application/json
+Authorization: Bearer {{$dotenv USER_TOKEN}}
 
 {
-  "data": {
-    "name": "Cyber Security"
-  }
+    "name": "{{$dotenv TEACHER_NAME}}"
 }
 
-###
-# 3.2.2 List All
-// เอา token จาก response ของข้อ 2.1 ไปใส่ใน Authorization
-GET {{baseUrl}}/api/subjects
-Authorization: Bearer {{userLogin.response.body.jwt}}
+#### 3.2.2 Get all Teacher
+GET http://localhost:9091/api/teachers
+Authorization: Bearer {{$dotenv USER_TOKEN}}
 
-###
-# 3.2.3 List with ID
-// ดึง ID จากข้อ 3.2.1 ให้อัตโนมัติ (หรือเปลี่ยนเป็นเลข ID ที่ต้องการค้นหา)
-GET {{baseUrl}}/api/subjects/{{createSubject.response.body.data.id}}
-Authorization: Bearer {{userLogin.response.body.jwt}}
-
-###
-# 3.2.4 Update
-// ดึง ID จากข้อ 3.2.1 ให้อัตโนมัติ (หรือเปลี่ยนเป็นเลข ID ที่ต้องการอัปเดต)
-PUT {{baseUrl}}/api/subjects/{{createSubject.response.body.data.id}}
-Authorization: Bearer {{userLogin.response.body.jwt}}
+#### 3.2.3 Update Teacher
+PUT http://localhost:9091/api/teachers/1
 Content-Type: application/json
+Authorization: Bearer {{$dotenv USER_TOKEN}}
 
 {
-  "data": {
-    "name": "Cyber Security (Updated)"
-  }
+    "name": "{{$dotenv TEACHER_UPDATE_NAME}}"
 }
 
-###
-# 3.2.5 Delete
-// ดึง ID จากข้อ 3.2.1 ให้อัตโนมัติ (หรือเปลี่ยนเป็นเลข ID ที่ต้องการลบ)
-DELETE {{baseUrl}}/api/subjects/{{createSubject.response.body.data.id}}
-Authorization: Bearer {{userLogin.response.body.jwt}}
+#### 3.2.4 Delete Teacher
+DELETE http://localhost:9091/api/teachers/1
+Authorization: Bearer {{$dotenv USER_TOKEN}}
 
+#### 3.2.5 Get Teacher by ID
+GET http://localhost:9091/api/teachers/1
+Authorization: Bearer {{$dotenv USER_TOKEN}}
 
-### ==========================================
-## 3.3 Teacher
-
-# 3.3.1 Create
-# @name createTeacher
-// เอา token จาก response ของข้อ 2.1 ไปใส่ใน Authorization
-POST {{baseUrl}}/api/teachers
-Authorization: Bearer {{userLogin.response.body.jwt}}
+### 3.3 Subject
+#### 3.3.1 Create Subject
+POST http://localhost:9091/api/subjects
 Content-Type: application/json
+Authorization: Bearer {{$dotenv USER_TOKEN}}
 
 {
-  "data": {
-    "name": "Ajarn Prawee"
-  }
+    "name": "{{$dotenv SUBJECT_NAME}}"
 }
 
-###
-# 3.3.2 List All
-// เอา token จาก response ของข้อ 2.1 ไปใส่ใน Authorization
-GET {{baseUrl}}/api/teachers
-Authorization: Bearer {{userLogin.response.body.jwt}}
+#### 3.3.2 Get all Subject
+GET http://localhost:9091/api/subjects
+Authorization: Bearer {{$dotenv USER_TOKEN}}
 
-###
-# 3.3.3 List with ID
-// ดึง ID จากข้อ 3.3.1 ให้อัตโนมัติ (หรือเปลี่ยนเป็นเลข ID ที่ต้องการค้นหา)
-GET {{baseUrl}}/api/teachers/{{createTeacher.response.body.data.id}}
-Authorization: Bearer {{userLogin.response.body.jwt}}
-
-###
-# 3.3.4 Update
-// ดึง ID จากข้อ 3.3.1 ให้อัตโนมัติ (หรือเปลี่ยนเป็นเลข ID ที่ต้องการอัปเดต)
-PUT {{baseUrl}}/api/teachers/{{createTeacher.response.body.data.id}}
-Authorization: Bearer {{userLogin.response.body.jwt}}
+#### 3.3.3 Update Subject
+PUT http://localhost:9091/api/subjects/1
 Content-Type: application/json
+Authorization: Bearer {{$dotenv USER_TOKEN}}
 
 {
-  "data": {
-    "name": "Ajarn Prawee (Updated)"
-  }
+    "name": "{{$dotenv SUBJECT_UPDATE_NAME}}"
 }
 
-###
-# 3.3.5 Delete
-// ดึง ID จากข้อ 3.3.1 ให้อัตโนมัติ (หรือเปลี่ยนเป็นเลข ID ที่ต้องการลบ)
-DELETE {{baseUrl}}/api/teachers/{{createTeacher.response.body.data.id}}
-Authorization: Bearer {{userLogin.response.body.jwt}}
+#### 3.3.4 Delete Subject
+DELETE http://localhost:9091/api/subjects/1
+Authorization: Bearer {{$dotenv USER_TOKEN}}
+
+#### 3.3.5 Get Subject by ID
+GET http://localhost:9091/api/subjects/1
+Authorization: Bearer {{$dotenv USER_TOKEN}}
